@@ -2,15 +2,15 @@ import { connect } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from 'bcryptjs';
-
+import jwt from 'jsonwebtoken';
 
 connect();
 
 // Password verification function
-const comparePassword = async (plainPassword: string, hashedPassword: string) => {
-    const isMatch = await bcrypt.compare(plainPassword, hashedPassword);
-    return isMatch;
-  };
+async function comparePassword(plainPassword: string, hashedPassword: string) {
+  const isMatch = await bcrypt.compare(plainPassword, hashedPassword);
+  return isMatch;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,7 +37,26 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
         }                                                                                                                               
       }
-    return NextResponse.json({ message: "Login successful" });
+
+    
+      const response = NextResponse.json({ message: "Login successful" });
+
+          // toked data 
+    const tokenData = {
+      id : user._id,
+      username : user.username,
+      email : user.email,
+    }
+
+    const token = jwt.sign(tokenData,process.env.JWT_SECRET_TOKEN,{expiresIn: "1d"})
+    response.cookies.set("token",token,{
+      httpOnly:true,
+      secure:true,
+      sameSite:"strict",
+      path:"/"});  
+    
+    return response;
+  
   } catch (error) {
     return NextResponse.json(
       { message: "Internal Server Error" },

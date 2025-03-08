@@ -23,7 +23,7 @@ const [user, setUser] = useState({
       const response = await axios.post("/api/users/login",user);
       console.log("✅ response", response.data);
       toast.success("Login successful!");
-      router.push("/");
+      router.push("/profile");
 
     }
     catch (error) {
