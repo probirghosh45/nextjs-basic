@@ -1,20 +1,11 @@
-// export default function LoginPage() {
-//   return (
-//     <div>
-//       <h1>Login Page</h1>
-//     </div>
-//   );
-// }
-
 "use client";
+import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 
 export default function LoginPage() {
-  // const [name, setName] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
 
 const [user, setUser] = useState({
     
@@ -22,19 +13,33 @@ const [user, setUser] = useState({
     password: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // console.log("name", user.name);
-    // console.log("email", user.email);
-    // console.log("password", user.password);
+    try{
+      // console.log("user", user)
+      const response = await axios.post("/api/users/login",user);
+      console.log("✅ response", response.data);
+      toast.success("Login successful!");
+      router.push("/");
 
-    if (!user.email || !user.password ) {
-      toast.error("Please fill in all fields");
-      return;
     }
-    toast.success("Login successful!");
-  };
+    catch (error) {
+      console.log("❌ Something went wrong");
+      // toast.error("An unknown error occurred!");
+      if(axios.isAxiosError(error)){
+        console.log("🚨 Axios error response:", error.response?.data);
+        console.warn(`⚠️: ${error.response?.data?.message || "Something went wrong"}`);
+        toast.error(error.response?.data?.message || "Login failed!");
+      }
+      else{
+        console.log("Unknown error", error);
+        // toast.error("An unknown error occurred!");
+      }
+    }
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
