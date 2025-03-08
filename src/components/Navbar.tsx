@@ -19,6 +19,12 @@ const Navbar = () => {
            Sign Up
           </Link>
         </li>
+        <li>
+          <Link href="/profile" className="text-white hover:text-gray-400" >
+           Profile
+          </Link>
+        </li>
+
       </ul>
     </nav>
   );
