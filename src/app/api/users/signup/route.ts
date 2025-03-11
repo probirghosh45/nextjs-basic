@@ -50,9 +50,9 @@ export async function POST(request: NextRequest) {
     // Set token in cookies
     response.cookies.set("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      path: "/",
+      // secure: true,
+      // sameSite: "strict",
+      // path: "/",
     });
 
     return response;

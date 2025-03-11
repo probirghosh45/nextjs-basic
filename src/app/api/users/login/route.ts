@@ -48,12 +48,13 @@ export async function POST(request: NextRequest) {
       email : user.email,
     }
 
-    const token = jwt.sign(tokenData,process.env.JWT_SECRET_TOKEN,{expiresIn: "1d"})
+    const token = jwt.sign(tokenData,process.env.JWT_SECRET_TOKEN!,{expiresIn: "1d"})
     response.cookies.set("token",token,{
       httpOnly:true,
-      secure:true,
-      sameSite:"strict",
-      path:"/"});  
+      // secure:true,
+      // sameSite:"strict",
+      // path:"/"
+    });  
     
     return response;
   
